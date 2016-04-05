@@ -27,24 +27,39 @@ function resetFields() {
     $("input.new-state").val("");
 }
 
+function newFormFields() {
+  $("#new-addresses").append('<div class="new-address">' +
+                               '<div class="form-group">' +
+                                 '<label for="new-street">Street</label>' +
+                                 '<input type="text" class="form-control new-street">' +
+                               '</div>' +
+                               '<div class="form-group">' +
+                                 '<label for="new-city">City</label>' +
+                                 '<input type="text" class="form-control new-city">' +
+                               '</div>' +
+                               '<div class="form-group">' +
+                                 '<label for="new-state">State</label>' +
+                                 '<input type="text" class="form-control new-state">' +
+                               '</div>' +
+                             '</div>');
+}
+
+function outputContactInfo(newContact) {
+  $("#show-contact").show();
+  $("#show-contact h2").text(newContact.fullName());
+  $(".first-name").text(newContact.firstName);
+  $(".last-name").text(newContact.lastName);
+  $("ul#addresses").text("");
+  newContact.addresses.forEach(function(address) {
+    $("ul#addresses").append("<li>" + address.fullAddress() + "</li>");
+  });
+}
+
 // user interface logic
 $(document).ready(function() {
-  
+
   $("#add-address").click(function() {
-    $("#new-addresses").append('<div class="new-address">' +
-                                 '<div class="form-group">' +
-                                   '<label for="new-street">Street</label>' +
-                                   '<input type="text" class="form-control new-street">' +
-                                 '</div>' +
-                                 '<div class="form-group">' +
-                                   '<label for="new-city">City</label>' +
-                                   '<input type="text" class="form-control new-city">' +
-                                 '</div>' +
-                                 '<div class="form-group">' +
-                                   '<label for="new-state">State</label>' +
-                                   '<input type="text" class="form-control new-state">' +
-                                 '</div>' +
-                               '</div>');
+    newFormFields();
   });
 
   $("form#new-contact").submit(function(event) {
@@ -65,16 +80,10 @@ $(document).ready(function() {
     $("ul#contacts").append("<li><span class='contact'>" + newContact.fullName() + "</span></li>");
 
     $(".contact").last().click(function() {
-      $("#show-contact").show();
-      $("#show-contact h2").text(newContact.fullName());
-      $(".first-name").text(newContact.firstName);
-      $(".last-name").text(newContact.lastName);
-      $("ul#addresses").text("");
-      newContact.addresses.forEach(function(address) {
-        $("ul#addresses").append("<li>" + address.fullAddress() + "</li>");
-      });
+      outputContactInfo(newContact);
     });
-
+    //this will remove extra input address fields after submitting
+    $(".form-group").not($(".original")).remove();
     resetFields();
 
   });
